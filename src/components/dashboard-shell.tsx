@@ -25,10 +25,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout } from "@/redux/thunks/auth.thunks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NotificationBell } from "@/components/notification-bell";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/packs", label: "Packs", icon: Boxes },
+  { href: "/solutions", label: "Solutions", icon: Boxes },
   { href: "/blog", label: "Blog", icon: BookOpen },
   { href: "/categories", label: "Categories", icon: FolderTree },
   { href: "/orders", label: "Orders", icon: ShoppingCart },
@@ -65,9 +66,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className="bg-sidebar text-sidebar-foreground border-sidebar-border hidden w-64 shrink-0 flex-col border-r md:flex">
         <div className="flex h-14 items-center gap-2 border-b px-5">
-          <span className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-md text-sm font-bold">
-            O
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icon.svg" alt="OrbitKit" className="size-7 rounded-md" />
           <span className="font-bold tracking-tight">OrbitKit</span>
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
@@ -102,13 +102,14 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
             <Input
               type="search"
-              placeholder="Search packs, posts, orders…"
+              placeholder="Search solutions, posts, orders…"
               className="pl-9"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </form>
-          <div className="ml-auto flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-2 sm:gap-3">
+            <NotificationBell />
             {user && (
               <span className="text-muted-foreground hidden text-sm sm:inline">
                 {user.name || user.email}

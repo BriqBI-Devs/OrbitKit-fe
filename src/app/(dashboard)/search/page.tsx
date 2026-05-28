@@ -25,7 +25,7 @@ type SearchResult = {
 
 // Maps a result entity type to its admin route prefix.
 const ROUTE_FOR: Record<string, string> = {
-  pack: "/packs",
+  solution: "/solutions",
   blog: "/blog",
   order: "/orders",
   lead: "/leads",
@@ -84,7 +84,7 @@ function SearchInner() {
     <div>
       <PageHeader
         title="Search"
-        description="Find packs, posts, orders, leads and users."
+        description="Find solutions, posts, orders, leads and users."
       />
 
       <div className="relative mb-6 max-w-xl">

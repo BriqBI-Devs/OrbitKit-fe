@@ -21,11 +21,13 @@ import {
 } from "@/components/ui/select";
 import { DataTable, type Column } from "@/components/data-table";
 import { StatusBadge } from "@/components/status-badge";
+import { Button } from "@/components/ui/button";
 
 export default function SubscriptionsPage() {
   const [subs, setSubs] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState("all");
+  const [cancelingId, setCancelingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -48,6 +50,24 @@ export default function SubscriptionsPage() {
     load();
   }, [load]);
 
+  const handleCancel = useCallback(
+    async (id: string) => {
+      if (!window.confirm("Cancel this subscription? This cannot be undone."))
+        return;
+      setCancelingId(id);
+      try {
+        await api.post(`/subscriptions/${id}/cancel`);
+        toast.success("Subscription cancelled");
+        await load();
+      } catch (err) {
+        toast.error(errorMessage(err, "Failed to cancel subscription"));
+      } finally {
+        setCancelingId(null);
+      }
+    },
+    [load]
+  );
+
   const columns: Column<Subscription>[] = useMemo(
     () => [
       {
@@ -58,8 +78,8 @@ export default function SubscriptionsPage() {
         ),
       },
       {
-        key: "pack",
-        header: "Pack",
+        key: "solution",
+        header: "Solution",
         cell: (s) => (
           <span className="text-muted-foreground">
             {s.packSlugSnapshot ?? "—"}
@@ -103,8 +123,27 @@ export default function SubscriptionsPage() {
           </span>
         ),
       },
+      {
+        key: "actions",
+        header: "",
+        cell: (s) =>
+          s.status === "active" ||
+          s.status === "past_due" ||
+          s.status === "pending" ? (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={cancelingId === s._id}
+              onClick={() => handleCancel(s._id)}
+            >
+              {cancelingId === s._id ? "Cancelling…" : "Cancel"}
+            </Button>
+          ) : (
+            <span className="text-muted-foreground text-xs">—</span>
+          ),
+      },
     ],
-    []
+    [cancelingId, handleCancel]
   );
 
   return (

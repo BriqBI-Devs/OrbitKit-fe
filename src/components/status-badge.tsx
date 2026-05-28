@@ -11,7 +11,7 @@ type BadgeVariant =
 
 // Maps the various entity status strings to a badge variant.
 const STATUS_VARIANTS: Record<string, BadgeVariant> = {
-  // packs / blog
+  // solutions / blog
   published: "success",
   draft: "secondary",
   scheduled: "info",

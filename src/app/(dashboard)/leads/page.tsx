@@ -83,7 +83,7 @@ export default function LeadsPage() {
         ),
       },
       {
-        key: "pack",
+        key: "solution",
         header: "Interested in",
         cell: (l) => (
           <span className="text-muted-foreground">

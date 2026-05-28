@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 import api from "@/lib/axios";
 import { errorMessage, formatDate, formatUsd } from "@/lib/format";
-import type { Pack } from "@/lib/types";
+import type { Solution } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,9 +33,9 @@ import { DataTable, type Column } from "@/components/data-table";
 import { StatusBadge } from "@/components/status-badge";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 
-export default function PacksPage() {
+export default function SolutionsPage() {
   const router = useRouter();
-  const [packs, setPacks] = useState<Pack[]>([]);
+  const [solutions, setPacks] = useState<Solution[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
@@ -52,12 +52,12 @@ export default function PacksPage() {
       const params = new URLSearchParams();
       if (status !== "all") params.set("status", status);
       if (q.trim()) params.set("q", q.trim());
-      const res = await api.get(`/packs/admin/all?${params.toString()}`);
+      const res = await api.get(`/solutions/admin/all?${params.toString()}`);
       const data = res.data?.data ?? res.data;
       setPacks(Array.isArray(data) ? data : []);
       setSelected(new Set());
     } catch (err) {
-      toast.error(errorMessage(err, "Failed to load packs"));
+      toast.error(errorMessage(err, "Failed to load solutions"));
     } finally {
       setLoading(false);
     }
@@ -77,13 +77,13 @@ export default function PacksPage() {
     });
 
   const toggleAll = (checked: boolean) =>
-    setSelected(checked ? new Set(packs.map((p) => p._id!)) : new Set());
+    setSelected(checked ? new Set(solutions.map((p) => p._id!)) : new Set());
 
-  const togglePublish = async (pack: Pack) => {
-    const next = pack.status === "published" ? "draft" : "published";
+  const togglePublish = async (solution: Solution) => {
+    const next = solution.status === "published" ? "draft" : "published";
     try {
-      await api.patch(`/packs/admin/${pack._id}/status`, { status: next });
-      toast.success(next === "published" ? "Pack published" : "Pack unpublished");
+      await api.patch(`/solutions/admin/${solution._id}/status`, { status: next });
+      toast.success(next === "published" ? "Solution published" : "Solution unpublished");
       load();
     } catch (err) {
       toast.error(errorMessage(err, "Failed to update status"));
@@ -92,11 +92,11 @@ export default function PacksPage() {
 
   const deletePack = async (id: string) => {
     try {
-      await api.delete(`/packs/admin/${id}`);
-      toast.success("Pack deleted");
+      await api.delete(`/solutions/admin/${id}`);
+      toast.success("Solution deleted");
       load();
     } catch (err) {
-      toast.error(errorMessage(err, "Failed to delete pack"));
+      toast.error(errorMessage(err, "Failed to delete solution"));
     }
   };
 
@@ -104,22 +104,22 @@ export default function PacksPage() {
     const ids = Array.from(selected);
     if (ids.length === 0) return;
     try {
-      await api.post("/packs/admin/bulk", { ids, action });
-      toast.success(`${ids.length} pack(s) ${action}ed`);
+      await api.post("/solutions/admin/bulk", { ids, action });
+      toast.success(`${ids.length} solution(s) ${action}ed`);
       load();
     } catch (err) {
       toast.error(errorMessage(err, "Bulk action failed"));
     }
   };
 
-  const columns: Column<Pack>[] = useMemo(
+  const columns: Column<Solution>[] = useMemo(
     () => [
       {
         key: "title",
         header: "Title",
         cell: (p) => (
           <Link
-            href={`/packs/${p._id}`}
+            href={`/solutions/${p._id}`}
             className="font-medium hover:underline"
             onClick={(e) => e.stopPropagation()}
           >
@@ -192,7 +192,7 @@ export default function PacksPage() {
               variant="ghost"
               size="icon-sm"
               title="Edit"
-              onClick={() => router.push(`/packs/${p._id}`)}
+              onClick={() => router.push(`/solutions/${p._id}`)}
             >
               <Pencil className="size-4" />
             </Button>
@@ -218,13 +218,13 @@ export default function PacksPage() {
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <PageHeader
-          title="Packs"
-          description="Automation packs available in the catalog."
+          title="Solutions"
+          description="Automation solutions available in the catalog."
         />
         <Button asChild>
-          <Link href="/packs/new">
+          <Link href="/solutions/new">
             <Plus className="size-4" />
-            New pack
+            New solution
           </Link>
         </Button>
       </div>
@@ -233,7 +233,7 @@ export default function PacksPage() {
         <div className="relative max-w-xs flex-1">
           <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
-            placeholder="Search packs…"
+            placeholder="Search solutions…"
             className="pl-9"
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -292,10 +292,10 @@ export default function PacksPage() {
 
       <DataTable
         columns={columns}
-        rows={packs}
+        rows={solutions}
         getRowId={(p) => p._id!}
         loading={loading}
-        emptyMessage="No packs found."
+        emptyMessage="No solutions found."
         selectable
         selectedIds={selected}
         onToggleRow={toggleRow}
@@ -305,10 +305,10 @@ export default function PacksPage() {
       <ConfirmDialog
         open={confirm?.type === "delete"}
         onOpenChange={(o) => !o && setConfirm(null)}
-        title="Delete pack?"
+        title="Delete solution?"
         description={
           confirm?.type === "delete"
-            ? `"${confirm.title ?? "This pack"}" will be permanently removed.`
+            ? `"${confirm.title ?? "This solution"}" will be permanently removed.`
             : undefined
         }
         confirmLabel="Delete"
@@ -320,7 +320,7 @@ export default function PacksPage() {
       <ConfirmDialog
         open={confirm?.type === "bulk-delete"}
         onOpenChange={(o) => !o && setConfirm(null)}
-        title={`Delete ${selected.size} pack(s)?`}
+        title={`Delete ${selected.size} solution(s)?`}
         description="This action cannot be undone."
         confirmLabel="Delete"
         destructive

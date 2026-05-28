@@ -44,4 +44,3 @@ src/
     slices/auth.slice.ts
     thunks/auth.thunks.ts
 ```
-# OrbitKit-fe

@@ -57,8 +57,8 @@ export default function OrdersPage() {
         cell: (o) => <span className="font-medium">{o.customerEmail ?? "—"}</span>,
       },
       {
-        key: "pack",
-        header: "Pack",
+        key: "solution",
+        header: "Solution",
         cell: (o) => (
           <span className="text-muted-foreground">
             {o.packSlugSnapshot ?? "—"}
@@ -113,7 +113,7 @@ export default function OrdersPage() {
     <div>
       <PageHeader
         title="Orders"
-        description="One-time pack purchases and their fulfillment status."
+        description="One-time solution purchases and their fulfillment status."
       />
 
       <div className="mb-4 flex flex-wrap items-center gap-3">

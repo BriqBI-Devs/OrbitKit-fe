@@ -150,7 +150,7 @@ export default function OrderDetailPage({
                 )
               }
             />
-            <Row label="Pack" value={order.packSlugSnapshot ?? "—"} />
+            <Row label="Solution" value={order.packSlugSnapshot ?? "—"} />
             <Row label="Created" value={formatDateTime(order.createdAt)} />
           </CardContent>
         </Card>

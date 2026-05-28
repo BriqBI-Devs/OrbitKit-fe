@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 
 const ENTITY_TYPES = [
-  "pack",
+  "solution",
   "blog",
   "order",
   "subscription",

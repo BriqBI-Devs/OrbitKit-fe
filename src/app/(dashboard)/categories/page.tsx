@@ -127,7 +127,7 @@ export default function CategoriesPage() {
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <PageHeader
           title="Categories"
-          description="Manage pack and blog categories."
+          description="Manage solution and blog categories."
         />
         <Button onClick={openCreate}>
           <Plus className="size-4" />
@@ -137,7 +137,7 @@ export default function CategoriesPage() {
 
       <Tabs value={kind} onValueChange={(v) => setKind(v as Kind)}>
         <TabsList>
-          <TabsTrigger value="pack">Pack categories</TabsTrigger>
+          <TabsTrigger value="pack">Solution categories</TabsTrigger>
           <TabsTrigger value="blog">Blog categories</TabsTrigger>
         </TabsList>
       </Tabs>
@@ -261,7 +261,7 @@ export default function CategoriesPage() {
         open={!!deleteId}
         onOpenChange={(o) => !o && setDeleteId(null)}
         title="Delete category?"
-        description="Packs or posts using it will be left without a category."
+        description="Solutions or posts using it will be left without a category."
         confirmLabel="Delete"
         destructive
         onConfirm={() => {

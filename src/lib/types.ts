@@ -12,16 +12,16 @@ export type Category = {
   sortOrder?: number;
 };
 
-export type PackFeature = { label: string; sortOrder?: number };
-export type PackFaq = { question: string; answer: string; sortOrder?: number };
-export type PackFile = {
+export type SolutionFeature = { label: string; sortOrder?: number };
+export type SolutionFaq = { question: string; answer: string; sortOrder?: number };
+export type SolutionFile = {
   tier: "diy" | "done_with_you" | "done_for_you";
   label: string;
   storagePath: string;
   sizeBytes?: number;
 };
 
-export type Pack = {
+export type Solution = {
   _id?: string;
   slug: string;
   title: string;
@@ -46,9 +46,9 @@ export type Pack = {
   ogImageUrl?: string;
   canonicalUrl?: string;
   focusKeyword?: string;
-  features?: PackFeature[];
-  faqs?: PackFaq[];
-  files?: PackFile[];
+  features?: SolutionFeature[];
+  faqs?: SolutionFaq[];
+  files?: SolutionFile[];
   createdAt?: string;
   updatedAt?: string;
 };

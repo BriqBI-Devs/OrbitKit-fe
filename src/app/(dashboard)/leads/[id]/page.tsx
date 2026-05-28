@@ -144,7 +144,7 @@ export default function LeadDetailPage({
             <Row label="Company" value={lead.company} />
             <Row label="Company size" value={lead.companySize} />
             <Row label="M365 plan" value={lead.m365Plan} />
-            <Row label="Pack of interest" value={lead.packOfInterest} />
+            <Row label="Solution of interest" value={lead.packOfInterest} />
             <Row label="Budget" value={lead.budget} />
             <Row label="Timeline" value={lead.timeline} />
             <Row label="Source" value={lead.source} />

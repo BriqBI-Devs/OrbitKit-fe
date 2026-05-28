@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import api from "@/lib/axios";
 import { errorMessage, formatBytes, slugify } from "@/lib/format";
 import { useCategories } from "@/lib/use-categories";
-import type { Pack } from "@/lib/types";
+import type { Solution } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,7 +41,7 @@ import {
 } from "@/components/editor/image-uploader";
 import { TagsInput } from "@/components/editor/tags-input";
 
-const UPLOAD = "/packs/admin/upload";
+const UPLOAD = "/solutions/admin/upload";
 
 const fileSchema = z.object({
   tier: z.enum(["diy", "done_with_you", "done_for_you"]),
@@ -50,7 +50,7 @@ const fileSchema = z.object({
   sizeBytes: z.number().optional(),
 });
 
-const packSchema = z.object({
+const solutionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
   shortDescription: z.string().optional(),
@@ -87,7 +87,7 @@ const packSchema = z.object({
   files: z.array(fileSchema),
 });
 
-type PackFormValues = z.infer<typeof packSchema>;
+type SolutionFormValues = z.infer<typeof solutionSchema>;
 
 const TIERS = [
   { value: "diy", label: "DIY" },
@@ -95,34 +95,34 @@ const TIERS = [
   { value: "done_for_you", label: "Done for you" },
 ] as const;
 
-function toFormValues(pack?: Pack | null): PackFormValues {
+function toFormValues(solution?: Solution | null): SolutionFormValues {
   return {
-    title: pack?.title ?? "",
-    slug: pack?.slug ?? "",
-    shortDescription: pack?.shortDescription ?? "",
-    longDescriptionHtml: pack?.longDescriptionHtml ?? "",
-    categoryId: pack?.categoryId ?? "",
-    tags: pack?.tags ?? [],
-    status: pack?.status ?? "draft",
-    featured: pack?.featured ?? false,
-    sortOrder: pack?.sortOrder ?? 0,
-    heroImageUrl: pack?.heroImageUrl ?? "",
-    galleryImageUrls: pack?.galleryImageUrls ?? [],
-    demoVideoUrl: pack?.demoVideoUrl ?? "",
-    priceDiyUsd: pack?.priceDiyUsd ?? 0,
-    priceDoneWithYouUsd: pack?.priceDoneWithYouUsd ?? null,
-    priceDoneForYouUsd: pack?.priceDoneForYouUsd ?? null,
-    priceManagedMonthlyUsd: pack?.priceManagedMonthlyUsd ?? null,
-    m365Licenses: pack?.m365Licenses ?? [],
-    bookingUrl: pack?.bookingUrl ?? "",
-    metaTitle: pack?.metaTitle ?? "",
-    metaDescription: pack?.metaDescription ?? "",
-    ogImageUrl: pack?.ogImageUrl ?? "",
-    canonicalUrl: pack?.canonicalUrl ?? "",
-    focusKeyword: pack?.focusKeyword ?? "",
-    features: pack?.features ?? [],
-    faqs: pack?.faqs ?? [],
-    files: pack?.files ?? [],
+    title: solution?.title ?? "",
+    slug: solution?.slug ?? "",
+    shortDescription: solution?.shortDescription ?? "",
+    longDescriptionHtml: solution?.longDescriptionHtml ?? "",
+    categoryId: solution?.categoryId ?? "",
+    tags: solution?.tags ?? [],
+    status: solution?.status ?? "draft",
+    featured: solution?.featured ?? false,
+    sortOrder: solution?.sortOrder ?? 0,
+    heroImageUrl: solution?.heroImageUrl ?? "",
+    galleryImageUrls: solution?.galleryImageUrls ?? [],
+    demoVideoUrl: solution?.demoVideoUrl ?? "",
+    priceDiyUsd: solution?.priceDiyUsd ?? 0,
+    priceDoneWithYouUsd: solution?.priceDoneWithYouUsd ?? null,
+    priceDoneForYouUsd: solution?.priceDoneForYouUsd ?? null,
+    priceManagedMonthlyUsd: solution?.priceManagedMonthlyUsd ?? null,
+    m365Licenses: solution?.m365Licenses ?? [],
+    bookingUrl: solution?.bookingUrl ?? "",
+    metaTitle: solution?.metaTitle ?? "",
+    metaDescription: solution?.metaDescription ?? "",
+    ogImageUrl: solution?.ogImageUrl ?? "",
+    canonicalUrl: solution?.canonicalUrl ?? "",
+    focusKeyword: solution?.focusKeyword ?? "",
+    features: solution?.features ?? [],
+    faqs: solution?.faqs ?? [],
+    files: solution?.files ?? [],
   };
 }
 
@@ -162,9 +162,9 @@ function PriceField({
   );
 }
 
-export function PackForm({ pack }: { pack?: Pack | null }) {
+export function SolutionForm({ solution }: { solution?: Solution | null }) {
   const router = useRouter();
-  const isEdit = !!pack?._id;
+  const isEdit = !!solution?._id;
   const { categories } = useCategories("pack");
   const [submitting, setSubmitting] = useState(false);
   const [uploadingFiles, setUploadingFiles] = useState(false);
@@ -177,9 +177,9 @@ export function PackForm({ pack }: { pack?: Pack | null }) {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm<PackFormValues>({
-    resolver: zodResolver(packSchema),
-    defaultValues: toFormValues(pack),
+  } = useForm<SolutionFormValues>({
+    resolver: zodResolver(solutionSchema),
+    defaultValues: toFormValues(solution),
   });
 
   const features = useFieldArray({ control, name: "features" });
@@ -189,7 +189,7 @@ export function PackForm({ pack }: { pack?: Pack | null }) {
   const titleValue = watch("title");
   const slugValue = watch("slug");
 
-  const onSubmit = async (values: PackFormValues) => {
+  const onSubmit = async (values: SolutionFormValues) => {
     setSubmitting(true);
     try {
       const payload = {
@@ -197,15 +197,15 @@ export function PackForm({ pack }: { pack?: Pack | null }) {
         categoryId: values.categoryId || null,
       };
       if (isEdit) {
-        await api.put(`/packs/admin/${pack!._id}`, payload);
-        toast.success("Pack updated");
+        await api.put(`/solutions/admin/${solution!._id}`, payload);
+        toast.success("Solution updated");
       } else {
-        await api.post("/packs/admin", payload);
-        toast.success("Pack created");
+        await api.post("/solutions/admin", payload);
+        toast.success("Solution created");
       }
-      router.push("/packs");
+      router.push("/solutions");
     } catch (err) {
-      toast.error(errorMessage(err, "Failed to save pack"));
+      toast.error(errorMessage(err, "Failed to save solution"));
     } finally {
       setSubmitting(false);
     }
@@ -248,16 +248,16 @@ export function PackForm({ pack }: { pack?: Pack | null }) {
             type="button"
             variant="ghost"
             size="icon-sm"
-            onClick={() => router.push("/packs")}
+            onClick={() => router.push("/solutions")}
           >
             <ArrowLeft className="size-4" />
           </Button>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
-              {isEdit ? "Edit pack" : "New pack"}
+              {isEdit ? "Edit solution" : "New solution"}
             </h1>
             <p className="text-muted-foreground text-sm">
-              {isEdit ? pack?.title : "Create a new automation pack"}
+              {isEdit ? solution?.title : "Create a new automation solution"}
             </p>
           </div>
         </div>
@@ -267,7 +267,7 @@ export function PackForm({ pack }: { pack?: Pack | null }) {
           ) : (
             <Save className="size-4" />
           )}
-          {isEdit ? "Save changes" : "Create pack"}
+          {isEdit ? "Save changes" : "Create solution"}
         </Button>
       </div>
 
@@ -421,7 +421,7 @@ export function PackForm({ pack }: { pack?: Pack | null }) {
                       />
                     )}
                   />
-                  <Label htmlFor="featured">Featured pack</Label>
+                  <Label htmlFor="featured">Featured solution</Label>
                 </div>
               </div>
 
@@ -524,7 +524,7 @@ export function PackForm({ pack }: { pack?: Pack | null }) {
                   <RichTextEditor
                     value={field.value ?? ""}
                     onChange={field.onChange}
-                    placeholder="Describe the pack, what's included, outcomes…"
+                    placeholder="Describe the solution, what's included, outcomes…"
                   />
                 )}
               />

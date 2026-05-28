@@ -5,8 +5,8 @@ import { Loader2 } from "lucide-react";
 
 import api from "@/lib/axios";
 import { errorMessage } from "@/lib/format";
-import type { Pack } from "@/lib/types";
-import { PackForm } from "@/components/packs/pack-form";
+import type { Solution } from "@/lib/types";
+import { SolutionForm } from "@/components/solutions/solution-form";
 
 export default function EditPackPage({
   params,
@@ -14,7 +14,7 @@ export default function EditPackPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const [pack, setPack] = useState<Pack | null>(null);
+  const [solution, setPack] = useState<Solution | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,10 +22,10 @@ export default function EditPackPage({
     let active = true;
     (async () => {
       try {
-        const res = await api.get(`/packs/admin/${id}`);
+        const res = await api.get(`/solutions/admin/${id}`);
         if (active) setPack(res.data?.data ?? res.data);
       } catch (err) {
-        if (active) setError(errorMessage(err, "Failed to load pack"));
+        if (active) setError(errorMessage(err, "Failed to load solution"));
       } finally {
         if (active) setLoading(false);
       }
@@ -43,13 +43,13 @@ export default function EditPackPage({
     );
   }
 
-  if (error || !pack) {
+  if (error || !solution) {
     return (
       <div className="border-destructive/40 bg-destructive/10 text-destructive rounded-md border px-4 py-3 text-sm">
-        {error ?? "Pack not found."}
+        {error ?? "Solution not found."}
       </div>
     );
   }
 
-  return <PackForm pack={pack} />;
+  return <SolutionForm solution={solution} />;
 }
