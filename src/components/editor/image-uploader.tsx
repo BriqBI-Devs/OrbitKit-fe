@@ -10,7 +10,7 @@ import { errorMessage } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-type UploadedFile = { key: string; size: number };
+type UploadedFile = { key: string; url?: string; size: number };
 type UploadResponse = { files?: Record<string, UploadedFile[]> };
 
 async function uploadFiles(
@@ -28,12 +28,14 @@ async function uploadFiles(
 
 function Thumb({
   src,
+  previewUrl,
   onRemove,
 }: {
   src: string;
+  previewUrl?: string;
   onRemove: () => void;
 }) {
-  const url = storageUrl(src);
+  const url = previewUrl || storageUrl(src);
   return (
     <div className="group bg-muted relative aspect-video overflow-hidden rounded-md border">
       {url ? (
@@ -76,6 +78,7 @@ export function SingleImageUploader({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [pendingUrl, setPendingUrl] = useState<string>("");
 
   const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -84,6 +87,7 @@ export function SingleImageUploader({
       const uploaded = await uploadFiles(endpoint, fieldName, [files[0]]);
       if (uploaded[0]?.key) {
         onChange(uploaded[0].key);
+        setPendingUrl(uploaded[0].url ?? "");
         toast.success("Image uploaded");
       }
     } catch (err) {
@@ -105,7 +109,11 @@ export function SingleImageUploader({
       />
       {value ? (
         <div className="max-w-xs">
-          <Thumb src={value} onRemove={() => onChange("")} />
+          <Thumb
+            src={value}
+            previewUrl={pendingUrl || undefined}
+            onRemove={() => { onChange(""); setPendingUrl(""); }}
+          />
         </div>
       ) : null}
       <Button
@@ -141,16 +149,20 @@ export function GalleryUploader({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [urlMap, setUrlMap] = useState<Record<string, string>>({});
 
   const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     setUploading(true);
     try {
       const uploaded = await uploadFiles(endpoint, fieldName, files);
-      const keys = uploaded.map((f) => f.key).filter(Boolean);
-      if (keys.length) {
-        onChange([...value, ...keys]);
-        toast.success(`${keys.length} image(s) uploaded`);
+      const newKeys = uploaded.map((f) => f.key).filter(Boolean);
+      if (newKeys.length) {
+        onChange([...value, ...newKeys]);
+        const newUrls: Record<string, string> = {};
+        uploaded.forEach((f) => { if (f.url) newUrls[f.key] = f.url; });
+        setUrlMap((prev) => ({ ...prev, ...newUrls }));
+        toast.success(`${newKeys.length} image(s) uploaded`);
       }
     } catch (err) {
       toast.error(errorMessage(err, "Upload failed"));
@@ -176,7 +188,11 @@ export function GalleryUploader({
             <Thumb
               key={`${key}-${i}`}
               src={key}
-              onRemove={() => onChange(value.filter((_, idx) => idx !== i))}
+              previewUrl={urlMap[key]}
+              onRemove={() => {
+                onChange(value.filter((_, idx) => idx !== i));
+                setUrlMap((prev) => { const next = { ...prev }; delete next[key]; return next; });
+              }}
             />
           ))}
         </div>
