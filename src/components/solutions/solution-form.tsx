@@ -548,6 +548,7 @@ export function SolutionForm({ solution }: { solution?: Solution | null }) {
                       value={field.value}
                       onChange={field.onChange}
                       label="Upload hero image"
+                      initialPreviewUrl={solution?.heroImagePreviewUrl}
                     />
                   )}
                 />
@@ -563,6 +564,7 @@ export function SolutionForm({ solution }: { solution?: Solution | null }) {
                       fieldName="packGalleryImage"
                       value={field.value}
                       onChange={field.onChange}
+                      initialPreviewUrls={solution?.galleryImagePreviewUrls}
                     />
                   )}
                 />
@@ -798,6 +800,7 @@ export function SolutionForm({ solution }: { solution?: Solution | null }) {
                       value={field.value}
                       onChange={field.onChange}
                       label="Upload OG image"
+                      initialPreviewUrl={solution?.ogImagePreviewUrl}
                     />
                   )}
                 />

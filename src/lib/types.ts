@@ -33,7 +33,9 @@ export type Solution = {
   featured?: boolean;
   sortOrder?: number;
   heroImageUrl?: string;
+  heroImagePreviewUrl?: string;
   galleryImageUrls?: string[];
+  galleryImagePreviewUrls?: string[];
   demoVideoUrl?: string;
   priceDiyUsd: number;
   priceDoneWithYouUsd?: number | null;
@@ -44,6 +46,7 @@ export type Solution = {
   metaTitle?: string;
   metaDescription?: string;
   ogImageUrl?: string;
+  ogImagePreviewUrl?: string;
   canonicalUrl?: string;
   focusKeyword?: string;
   features?: SolutionFeature[];
@@ -60,7 +63,9 @@ export type BlogPost = {
   excerpt?: string;
   bodyHtml?: string;
   coverImageUrl?: string;
+  coverImagePreviewUrl?: string;
   contentImages?: string[];
+  contentImagePreviewUrls?: string[];
   author?: { name?: string; email?: string };
   categoryId?: string | null;
   tags?: string[];
@@ -68,6 +73,7 @@ export type BlogPost = {
   metaTitle?: string;
   metaDescription?: string;
   ogImageUrl?: string;
+  ogImagePreviewUrl?: string;
   canonicalUrl?: string;
   focusKeyword?: string;
   views?: number;

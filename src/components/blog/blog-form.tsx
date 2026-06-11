@@ -289,6 +289,7 @@ export function BlogForm({ post }: { post?: BlogPost | null }) {
                       value={field.value}
                       onChange={field.onChange}
                       label="Upload cover image"
+                      initialPreviewUrl={post?.coverImagePreviewUrl}
                     />
                   )}
                 />
@@ -353,6 +354,7 @@ export function BlogForm({ post }: { post?: BlogPost | null }) {
                       value={field.value}
                       onChange={field.onChange}
                       label="Upload OG image"
+                      initialPreviewUrl={post?.ogImagePreviewUrl}
                     />
                   )}
                 />

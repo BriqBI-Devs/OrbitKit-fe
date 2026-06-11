@@ -69,16 +69,18 @@ export function SingleImageUploader({
   value,
   onChange,
   label = "Upload image",
+  initialPreviewUrl,
 }: {
   endpoint: string;
   fieldName: string;
   value?: string;
   onChange: (key: string) => void;
   label?: string;
+  initialPreviewUrl?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
-  const [pendingUrl, setPendingUrl] = useState<string>("");
+  const [pendingUrl, setPendingUrl] = useState<string>(initialPreviewUrl ?? "");
 
   const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -141,15 +143,23 @@ export function GalleryUploader({
   fieldName,
   value,
   onChange,
+  initialPreviewUrls,
 }: {
   endpoint: string;
   fieldName: string;
   value: string[];
   onChange: (keys: string[]) => void;
+  initialPreviewUrls?: string[];
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
-  const [urlMap, setUrlMap] = useState<Record<string, string>>({});
+  const [urlMap, setUrlMap] = useState<Record<string, string>>(() => {
+    const map: Record<string, string> = {};
+    if (initialPreviewUrls) {
+      value.forEach((key, i) => { if (initialPreviewUrls[i]) map[key] = initialPreviewUrls[i]; });
+    }
+    return map;
+  });
 
   const handleFiles = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
